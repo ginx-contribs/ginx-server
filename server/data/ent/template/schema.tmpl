@@ -1,0 +1,26 @@
+package schema
+
+import (
+    "entgo.io/ent"
+    "entgo.io/ent/schema"
+)
+
+// {{ . }} holds the schema definition for the {{ . }} entity.
+type {{ . }} struct {
+	ent.Schema
+}
+
+// Fields of the {{ . }}.
+func ({{ . }}) Fields() []ent.Field {
+	return []ent.Field{}
+}
+
+// Edges of the {{ . }}.
+func ({{ . }}) Edges() []ent.Edge {
+	return []ent.Edge{}
+}
+
+// Annotations of the {{ . }}
+func ({{ . }}) Annotations() []schema.Annotation {
+	return []schema.Annotation{}
+}
