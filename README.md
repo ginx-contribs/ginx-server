@@ -6,7 +6,6 @@
 $ ginx-server -f config.toml
 2024-09-24 21:36:51 INF [ginx-server] logging in level: INFO
 2024-09-24 21:36:52 INF [ginx-server] message queue is listening
-2024-09-24 21:36:52 INF [ginx-server] created 0 cron jobs
 2024-09-24 21:36:52 INF [ginx-server] server is listiening at 127.0.0.1:8080
 ```
 ginx-server is a quickstart template for single http server project, features as bellow:
