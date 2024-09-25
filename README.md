@@ -62,3 +62,55 @@ init your own git
 ```bash
 $ git init
 ```
+
+
+## structure
+this is standard structure for `ginx-server` project.
+```
+ginx-sever
+|-- bin
+|   |-- debug
+|   `-- release
+|       
+|-- cmd
+|   `-- ginx-server
+|-- server
+|   |-- api
+|   |-- conf
+|   |-- data
+|   |   |-- cache
+|   |   |-- ent
+|   |   |-- mq
+|   |   `-- repo
+|   |-- handler
+|   |-- mids
+|   |-- pkg
+|   |-- svc
+|   `-- types
+`-- test
+```
+introduction for structure as follows:
+
+`bin`: binary file output dir, it should be ignored by git.
+
+`cmd`: main entry package
+
+`server`: package for http server source code 
+
+`api`: package for http api definition
+
+`conf`: package for server configuration definition
+
+`data`: package for datasource
+
+`handler`: package for logic handler
+
+`mids`: package for http middlewares
+
+`pkg`: package for some tool packages
+
+`svc`: package for record all object dependencies
+
+`types`: package for error, request params, response definition
+
+
