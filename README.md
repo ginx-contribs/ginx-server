@@ -8,14 +8,14 @@ $ ginx-server -f config.toml
 2024-09-24 21:36:52 INF [ginx-server] message queue is listening
 2024-09-24 21:36:52 INF [ginx-server] server is listiening at 127.0.0.1:8080
 ```
-ginx-server is a quickstart template for single http server project, features as bellow:
+ginx-server is a quickstart template for standalone http server project, features as bellow:
 
-* ginx: integration with the ginx framework, supports graceful shutdown, hooks and more features.
-* jwt: supports jwt authorization that contains access token and refresh token
+* ginx: integrate with the ginx framework, supports graceful shutdown, hooks and more features.
+* jwt: supports jwt authentication that contains access token and refresh token
 * email: support register for email verification code
 * ent: ent ORM framework, support datasource from mysql, postgresql, sqlite
 * redis: supports redis cache
-* mq: support message queue, default Redis Stream.
+* mq: support message queue, default using Redis Stream.
 * wire: dependency injection with wire
 * swagger: support generate swagger api document 
 * makefile: build project with makefile
