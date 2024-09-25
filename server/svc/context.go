@@ -6,7 +6,6 @@ import (
 	"github.com/ginx-contribs/ginx-server/server/data/repo"
 	"github.com/ginx-contribs/ginx-server/server/handler/auth"
 	"github.com/ginx-contribs/ginx-server/server/handler/email"
-	"github.com/ginx-contribs/ginx-server/server/handler/job"
 	"github.com/ginx-contribs/ginx-server/server/handler/user"
 	"github.com/google/wire"
 )
@@ -29,11 +28,6 @@ type Context struct {
 
 	// email
 	EmailHandler *email.Handler
-
-	// job
-	JobHandler *job.Handler
-	JobRepo    *repo.JobRepo
-	CronJob    *job.CronJob
 
 	// message queue
 	MQ mq.Queue

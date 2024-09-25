@@ -13,6 +13,6 @@ import (
 )
 
 // initialize and setup app environment
-func setup(ctx types.Context) (svc.Context, error) {
+func Setup(ctx types.Context) (svc.Context, error) {
 	panic(wire.Build(ContextProvider, data.Provider, handler.Provider, api.Provider, svc.Provider))
 }

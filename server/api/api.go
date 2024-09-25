@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/ginx-contribs/ginx-server/server/api/auth"
-	"github.com/ginx-contribs/ginx-server/server/api/job"
 	"github.com/ginx-contribs/ginx-server/server/api/system"
 	"github.com/ginx-contribs/ginx-server/server/api/user"
 	"github.com/google/wire"
@@ -27,7 +26,6 @@ type Router struct {
 	Auth   auth.Router
 	System system.Router
 	User   user.Router
-	Job    job.Router
 }
 
 var Provider = wire.NewSet(
@@ -40,10 +38,6 @@ var Provider = wire.NewSet(
 	// user router
 	user.NewUserAPI,
 	user.NewRouter,
-
-	// job router
-	job.NewJobAPI,
-	job.NewRouter,
 
 	// build Router struct
 	wire.Struct(new(Router), "*"),

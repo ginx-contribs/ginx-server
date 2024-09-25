@@ -50,7 +50,7 @@ func NewApp(ctx context.Context, appConf *conf.App) (*ginx.Server, error) {
 	slog.Debug("setup api router")
 
 	// initialize api router
-	sc, err := setup(tc)
+	sc, err := Setup(tc)
 	if err != nil {
 		return nil, err
 	}
@@ -59,18 +59,9 @@ func NewApp(ctx context.Context, appConf *conf.App) (*ginx.Server, error) {
 	queue.Start(ctx)
 	slog.Info("message queue is listening")
 
-	// register cron job
-	cronJob, err := NewCronJob(ctx, tc, sc)
-	if err != nil {
-		return nil, err
-	}
-	started := cronJob.Start()
-	slog.Info(fmt.Sprintf("created %d cron jobs", started))
-
 	// shutdown hook
 	onShutdown := func(ctx context.Context) error {
 		logh.ErrorNotNil("message queue closed failed", queue.Close())
-		slog.Info(fmt.Sprintf("stopped %d jobs", cronJob.Stop()))
 		// should close db and redis at the end
 		logh.ErrorNotNil("db closed failed", db.Close())
 		logh.ErrorNotNil("redis closed failed", redisClient.Close())
