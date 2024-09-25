@@ -98,6 +98,8 @@ func NewHttpServer(ctx context.Context, appConf *conf.App, tc types.Context) (*g
 			requestid.RequestId(),
 			// access logger
 			middleware.Logger(slog.Default(), "request-log"),
+			// request cache
+			middleware.CacheRedis("ginx-cache.", time.Second*2, tc.Redis),
 			// jwt authentication
 			mids.TokenAuthenticator(authhandler.NewTokenHandler(appConf.Jwt, tc.Redis)),
 		),
