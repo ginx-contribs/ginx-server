@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ginx-contribs/ginx"
 	"github.com/ginx-contribs/ginx-server/server/handler/user"
-	usertype "github.com/ginx-contribs/ginx-server/server/types"
+	"github.com/ginx-contribs/ginx-server/server/types"
 	"github.com/ginx-contribs/ginx/pkg/resp"
 )
 
@@ -14,6 +14,24 @@ func NewUserAPI(userHandler *user.UserHandler) *UserAPI {
 
 type UserAPI struct {
 	userHandler *user.UserHandler
+}
+
+// Me
+// @Summary      Me
+// @Description  return user information for current user
+// @Tags         user
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  types.Response{data=types.UserInfo}
+// @Router       /user/me [GET]
+func (u UserAPI) Me(ctx *gin.Context) {
+	tokenInfo := types.MustGetTokenInfo(ctx)
+	userInfo, err := u.userHandler.FindByUID(ctx, tokenInfo.Claims.UserId)
+	if err != nil {
+		resp.Fail(ctx).Error(err).JSON()
+	} else {
+		resp.Ok(ctx).Data(userInfo).JSON()
+	}
 }
 
 // Info
@@ -26,7 +44,7 @@ type UserAPI struct {
 // @Success      200  {object}  types.Response{data=types.UserInfo}
 // @Router       /user/info [GET]
 func (u UserAPI) Info(ctx *gin.Context) {
-	var opt usertype.ULIDOptions
+	var opt types.ULIDOptions
 	if err := ginx.ShouldValidateQuery(ctx, &opt); err != nil {
 		return
 	}
@@ -48,7 +66,7 @@ func (u UserAPI) Info(ctx *gin.Context) {
 // @Success      200  {object}  types.Response{data=types.UserSearchResult}
 // @Router       /user/list [GET]
 func (u UserAPI) List(ctx *gin.Context) {
-	var page usertype.UserSearchOption
+	var page types.UserSearchOption
 	if err := ginx.ShouldValidateQuery(ctx, &page); err != nil {
 		return
 	}

@@ -469,6 +469,26 @@ paths:
       summary: List
       tags:
       - user
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      description: return user information for current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/types.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.UserInfo'
+              type: object
+      summary: Me
+      tags:
+      - user
 securityDefinitions:
   BearerAuth:
     in: header
