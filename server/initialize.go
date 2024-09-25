@@ -10,9 +10,7 @@ import (
 	"github.com/ginx-contribs/ginx-server/server/conf"
 	"github.com/ginx-contribs/ginx-server/server/data/ent"
 	authhandler "github.com/ginx-contribs/ginx-server/server/handler/auth"
-	"github.com/ginx-contribs/ginx-server/server/handler/job"
 	"github.com/ginx-contribs/ginx-server/server/mids"
-	"github.com/ginx-contribs/ginx-server/server/svc"
 	"github.com/ginx-contribs/ginx-server/server/types"
 	"github.com/ginx-contribs/ginx/constant/methods"
 	"github.com/ginx-contribs/ginx/contribs/requestid"
@@ -209,25 +207,4 @@ func NewEmailClient(ctx context.Context, emailConf conf.Email) (*mail.Client, er
 		return nil, err
 	}
 	return client, nil
-}
-
-// NewCronJob initialize cron jobs
-func NewCronJob(ctx context.Context, tc types.Context, sc svc.Context) (*job.CronJob, error) {
-	cj := sc.CronJob
-	// hooks
-	cj.BeforeHooks = append(cj.BeforeHooks, job.LogBefore(), job.UpdateBefore(sc.JobHandler))
-	cj.AfterHooks = append(cj.AfterHooks, job.LogAfter())
-	errs := []error{}
-	for _, err := range errs {
-		if err != nil {
-			return nil, err
-		}
-	}
-	for _, j := range cj.FutureJobs() {
-		err := sc.JobHandler.Upsert(ctx, j)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return cj, nil
 }

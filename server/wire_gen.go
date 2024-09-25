@@ -9,7 +9,6 @@ package server
 import (
 	"github.com/ginx-contribs/ginx-server/server/api"
 	auth2 "github.com/ginx-contribs/ginx-server/server/api/auth"
-	job2 "github.com/ginx-contribs/ginx-server/server/api/job"
 	"github.com/ginx-contribs/ginx-server/server/api/system"
 	user2 "github.com/ginx-contribs/ginx-server/server/api/user"
 	"github.com/ginx-contribs/ginx-server/server/data/cache"
@@ -17,7 +16,6 @@ import (
 	"github.com/ginx-contribs/ginx-server/server/data/repo"
 	"github.com/ginx-contribs/ginx-server/server/handler/auth"
 	"github.com/ginx-contribs/ginx-server/server/handler/email"
-	"github.com/ginx-contribs/ginx-server/server/handler/job"
 	"github.com/ginx-contribs/ginx-server/server/handler/user"
 	"github.com/ginx-contribs/ginx-server/server/svc"
 	"github.com/ginx-contribs/ginx-server/server/types"
@@ -31,7 +29,7 @@ import (
 // Injectors from wire.go:
 
 // initialize and setup app environment
-func setup(ctx types.Context) (svc.Context, error) {
+func Setup(ctx types.Context) (svc.Context, error) {
 	routerGroup := ctx.Router
 	app := ctx.AppConf
 	jwt := app.Jwt
@@ -56,16 +54,10 @@ func setup(ctx types.Context) (svc.Context, error) {
 	userHandler := user.NewUserHandler(userRepo)
 	userAPI := user2.NewUserAPI(userHandler)
 	userRouter := user2.NewRouter(routerGroup, userAPI)
-	jobRepo := repo.NewJobRepo(entClient)
-	cronJob := job.NewCronJob()
-	jobHandler := job.NewJobHandler(jobRepo, cronJob)
-	jobAPI := job2.NewJobAPI(jobHandler)
-	jobRouter := job2.NewRouter(routerGroup, jobAPI)
 	apiRouter := api.Router{
 		Auth:   router,
 		System: systemRouter,
 		User:   userRouter,
-		Job:    jobRouter,
 	}
 	context := svc.Context{
 		ApiRouter:    apiRouter,
@@ -73,9 +65,6 @@ func setup(ctx types.Context) (svc.Context, error) {
 		UserRepo:     userRepo,
 		AuthHandler:  authHandler,
 		EmailHandler: handler,
-		JobHandler:   jobHandler,
-		JobRepo:      jobRepo,
-		CronJob:      cronJob,
 		MQ:           streamQueue,
 	}
 	return context, nil
