@@ -86,10 +86,13 @@ func NewHttpServer(ctx context.Context, appConf *conf.App, tc types.Context) (*g
 			MaxHeaderBytes:     int(size.MB * 2),
 			MaxShutdownTimeout: time.Second * 5,
 		}),
-		ginx.WithNoMethod(middleware.NoMethod(methods.Get, methods.Post, methods.Put, methods.Delete, methods.Options)),
+		// 404 handler
 		ginx.WithNoRoute(middleware.NoRoute()),
+		// 405 handler
+		ginx.WithNoMethod(middleware.NoMethod(methods.Get, methods.Post, methods.Put, methods.Delete, methods.Options)),
+		// global middlewares
 		ginx.WithMiddlewares(
-			// reocvery handler
+			// recovery handler
 			middleware.Recovery(slog.Default(), nil),
 			// request id
 			requestid.RequestId(),
