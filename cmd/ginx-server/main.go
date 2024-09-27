@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/ginx-contribs/ginx"
-	"github.com/ginx-contribs/ginx-server/server"
-	"github.com/ginx-contribs/ginx-server/server/conf"
+	"github.com/ginx-contribs/ginx-server/internal/conf"
+	"github.com/ginx-contribs/ginx-server/internal/server"
+	"github.com/ginx-contribs/ginx-server/pkg/logh"
 	"github.com/spf13/cobra"
 	"log/slog"
 )
@@ -13,7 +14,7 @@ import (
 var (
 	Author     = "ginx-contribs"
 	Version    = "unknown"
-	BuildTime  = "0000"
+	BuildTime  = "1970.01.01"
 	ConfigFile = "conf.toml"
 )
 
@@ -58,16 +59,18 @@ func NewServer(ctx context.Context, author, version, buildTime, configFile strin
 	}
 
 	// initialize app logger
-	logger, err := server.NewLogger(appConf.Log)
+	logger, err := logh.NewLogger(appConf.Log)
 	if err != nil {
 		return nil, err
 	}
+	defer logger.Close()
 
+	// setup default logger
 	slog.SetDefault(logger.Slog())
 	slog.Info(fmt.Sprintf("logging in level: %s", appConf.Log.Level.String()))
 
 	// initialize app
-	app, err := server.NewApp(ctx, &appConf)
+	app, err := server.NewHTTPServer(ctx, &appConf, logger)
 	if err != nil {
 		return nil, err
 	}

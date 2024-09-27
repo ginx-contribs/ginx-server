@@ -48,7 +48,7 @@ $ make wire
 
 clone this project
 ```bash
-$ git clone git@github.com:ginx-contribs/ginx-server.git
+$ git clone git@github.com:ginx-contribs/ginx-internal.git
 ```
 checkout specify version
 ```bash

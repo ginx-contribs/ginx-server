@@ -20,7 +20,7 @@ ifeq ($(mode), release)
 	ldflags += -s -w
 endif
 
-# inject meta info
+# wirex meta info
 ifneq ($(app), $(nullstring))
 	ldflags += -X main.AppName=$(app)
 endif
@@ -74,9 +74,9 @@ build_all:
 
 # ent schema path
 schema = $(null_string)
-ent_dir := ./server/data/ent
+ent_dir := ./ent
 ent_out := $(ent_dir)/schema
-ent_template := ./server/data/ent/template
+ent_template := ./ent/template
 ent_generated := $(shell find $(ent_dir)/* ! -path "$(ent_out)*" ! -path "$(ent_template)*")
 
 .PHONY: ent_new, ent_gen, ent_clean
@@ -99,7 +99,7 @@ swag_gen:
 	go generate $(api_path)
 
 
-wire_out := ./server/
+wire_out := ./internal/wirex/
 
 .PHONY: wire
 wire:
