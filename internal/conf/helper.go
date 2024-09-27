@@ -102,10 +102,6 @@ var DefaultConfig = App{
 			Key:    "01J6EA3FKDDHTT9Q8Z5YKWHVCE",
 		},
 	},
-
-	Author:    "ginx-contribs",
-	Version:   "unknow",
-	BuildTime: "0000",
 }
 
 // Revise check the given configuration, if field value is zero then it will be overwritten by same filed value of DefaultConfig

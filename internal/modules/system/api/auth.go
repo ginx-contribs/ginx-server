@@ -11,18 +11,18 @@ import (
 )
 
 type AuthAPI struct {
-	Token   handler.TokenHandler
-	Auth    handler.AuthHandler
-	Captcha handler.CaptchaHandler
+	TokenHandler   handler.TokenHandler
+	AuthHandler    handler.AuthHandler
+	CaptchaHandler handler.CaptchaHandler
 }
 
 // Login
 // @Summary      Login
-// @Description  login with password, and returns jwt Token pair
+// @Description  login with password, and returns jwt token pair
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        loginOption  body  types.LoginOptions  true "login params"
+// @Param        LoginOptions  body  types.LoginOptions  true "LoginOptions"
 // @Success      200  {object}  types.Response{data=types.TokenResult}
 // @Router       /auth/login [POST]
 func (a *AuthAPI) Login(ctx *gin.Context) {
@@ -32,15 +32,16 @@ func (a *AuthAPI) Login(ctx *gin.Context) {
 	}
 
 	// login by username and password
-	tokenPair, err := a.Auth.LoginWithPassword(ctx, loginOpt)
+	tokenPair, err := a.AuthHandler.LoginWithPassword(ctx, loginOpt)
 	if err != nil {
 		resp.Fail(ctx).Error(err).JSON()
-	} else {
-		resp.Ok(ctx).Msg("login ok").Data(types.TokenResult{
-			AccessToken:  tokenPair.AccessToken.TokenString,
-			RefreshToken: tokenPair.RefreshToken.TokenString,
-		}).JSON()
+		return
 	}
+
+	resp.Ok(ctx).Msg("login ok").Data(types.TokenResult{
+		AccessToken:  tokenPair.AccessToken.TokenString,
+		RefreshToken: tokenPair.RefreshToken.TokenString,
+	}).JSON()
 }
 
 // Register
@@ -58,7 +59,7 @@ func (a *AuthAPI) Register(ctx *gin.Context) {
 		return
 	}
 
-	_, err := a.Auth.RegisterNewUser(ctx, registerOpt)
+	_, err := a.AuthHandler.RegisterNewUser(ctx, registerOpt)
 	if err != nil {
 		resp.Fail(ctx).Error(err).JSON()
 	} else {
@@ -72,25 +73,25 @@ func (a *AuthAPI) Register(ctx *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        ResetPaswdOptions   body  types.ResetPaswdOptions  true "reset params"
+// @Param        ResetOptions   body  types.ResetOptions  true "ResetOptions"
 // @Success      200  {object}  types.Response
 // @Router       /auth/reset [POST]
 func (a *AuthAPI) ResetPassword(ctx *gin.Context) {
-	var restOpt types.ResetPaswdOptions
+	var restOpt types.ResetOptions
 	if err := ginx.ShouldValidateJSON(ctx, &restOpt); err != nil {
 		return
 	}
 
-	if err := a.Auth.ResetPassword(ctx, restOpt); err != nil {
+	if err := a.AuthHandler.ResetPassword(ctx, restOpt); err != nil {
 		resp.Fail(ctx).Error(err).JSON()
-	} else {
-		resp.Ok(ctx).Msg("reset ok").JSON()
+		return
 	}
+	resp.Ok(ctx).Msg("reset password ok").JSON()
 }
 
 // Refresh
 // @Summary      Refresh
-// @Description  ask for refresh access Token lifetime with refresh Token
+// @Description  ask for refresh access TokenHandler lifetime with refresh TokenHandler
 // @Tags         auth
 // @Accept       json
 // @Produce      json
@@ -103,8 +104,8 @@ func (a *AuthAPI) Refresh(ctx *gin.Context) {
 		return
 	}
 
-	// ask for refresh Token
-	tokenPair, err := a.Token.Refresh(ctx, refreshOpt.AccessToken, refreshOpt.RefreshToken)
+	// ask for refresh TokenHandler
+	tokenPair, err := a.TokenHandler.Refresh(ctx, refreshOpt.AccessToken, refreshOpt.RefreshToken)
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			resp.Fail(ctx).Error(types.ErrCredentialExpired).JSON()
@@ -112,12 +113,12 @@ func (a *AuthAPI) Refresh(ctx *gin.Context) {
 			ctx.Error(err)
 			resp.Fail(ctx).Error(types.ErrCredentialInvalid).JSON()
 		}
-	} else {
-		resp.Ok(ctx).Msg("refresh ok").Data(types.TokenResult{
-			AccessToken:  tokenPair.AccessToken.TokenString,
-			RefreshToken: tokenPair.RefreshToken.TokenString,
-		}).JSON()
+		return
 	}
+	resp.Ok(ctx).Msg("refresh ok").Data(types.TokenResult{
+		AccessToken:  tokenPair.AccessToken.TokenString,
+		RefreshToken: tokenPair.RefreshToken.TokenString,
+	}).JSON()
 }
 
 // VerifyCode
@@ -141,10 +142,10 @@ func (a *AuthAPI) VerifyCode(ctx *gin.Context) {
 		return
 	}
 
-	err := a.Captcha.SendCaptchaEmail(ctx, verifyOpt.To, verifyOpt.Usage)
+	err := a.CaptchaHandler.SendCaptchaEmail(ctx, verifyOpt.To, verifyOpt.Usage)
 	if err != nil {
 		resp.Fail(ctx).Error(err).JSON()
-	} else {
-		resp.Ok(ctx).Msg("mail has been sent").JSON()
+		return
 	}
+	resp.Ok(ctx).Msg("mail has been sent").JSON()
 }

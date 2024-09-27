@@ -69,7 +69,7 @@ func (m Module) RegisterRouter(injector types.Injector) {
 		authGroup.POST("/register", authAPI.Register)
 		authGroup.POST("/reset", authAPI.ResetPassword)
 		authGroup.POST("/refresh", authAPI.Refresh)
-		authGroup.POST("/code", authAPI.VerifyCode)
+		authGroup.POST("/captcha", authAPI.VerifyCode)
 	}
 
 	// user api

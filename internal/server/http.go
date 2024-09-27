@@ -34,7 +34,7 @@ func NewHTTPServer(ctx context.Context, appConf *conf.App, logger *logx.Logger) 
 	}
 	// initialize email client
 	slog.Debug(fmt.Sprintf("establish email client(%s:%d)", appConf.Email.Host, appConf.Email.Port))
-	emailClient, err := wirex.NewEmailClient(ctx, appConf.Email)
+	emailClient, err := wirex.NewEmail(ctx, appConf.Email)
 	if err != nil {
 		return nil, err
 	}

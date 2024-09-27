@@ -44,7 +44,7 @@ type RegisterOptions struct {
 	Code string `json:"code" binding:"required,alphanum"`
 }
 
-type ResetPaswdOptions struct {
+type ResetOptions struct {
 	// user email address
 	Email string `json:"email" binding:"email"`
 	// new password

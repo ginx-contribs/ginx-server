@@ -7,16 +7,21 @@ import (
 
 // App is configuration for the whole application
 type App struct {
-	Server Server `toml:"server" comment:"http server configuration"`
-	Log    Log    `toml:"log" comment:"server log configuration"`
-	DB     DB     `toml:"db" comment:"database connection configuration"`
-	Redis  Redis  `toml:"redis" comment:"redis connection configuration"`
-	Email  Email  `toml:"email" comment:"email smtp client configuration"`
-	Jwt    Jwt    `toml:"jwt" comment:"jwt secret configuration"`
+	Server Server   `toml:"server" comment:"http server configuration"`
+	Log    Log      `toml:"log" comment:"server log configuration"`
+	DB     DB       `toml:"db" comment:"database connection configuration"`
+	Redis  Redis    `toml:"redis" comment:"redis connection configuration"`
+	Email  Email    `toml:"email" comment:"email smtp client configuration"`
+	Jwt    Jwt      `toml:"jwt" comment:"jwt secret configuration"`
+	Meta   MetaInfo `toml:"-"`
+}
 
-	Author    string `toml:"-" mapstructure:"-"`
-	Version   string `toml:"-" mapstructure:"-"`
-	BuildTime string `toml:"-" mapstructure:"-"`
+// MetaInfo for program
+type MetaInfo struct {
+	AppName   string
+	Author    string
+	Version   string
+	BuildTime string
 }
 
 // Server is configuration for the http server
@@ -95,9 +100,11 @@ type RateLimit struct {
 
 type Email struct {
 	Host     string     `toml:"host" comment:"smtp internal host"`
+	SSL      bool       `toml:"ssl" comment:"use ssl port"`
 	Port     int        `toml:"port" comment:"smtp internal port"`
 	Username string     `toml:"username" comment:"smtp user name"`
 	Password string     `toml:"password" comment:"password to authenticate"`
+	Template string     `toml:"template" comment:"custom email template dir"`
 	MQ       EmailMq    `toml:"-"`
 	Code     VerifyCode `toml:"code" comment:"email verification code configuration"`
 }

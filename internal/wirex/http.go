@@ -81,5 +81,6 @@ func validateParams(ctx *gin.Context, val any, err error, translator ut.Translat
 		resp.Fail(ctx).Code(types.ErrBadParams.Code).Error(verr).JSON()
 		return
 	}
-	resp.Fail(ctx).Code(types.ErrBadParams.Code).ErrorMsg("params validate failed").JSON()
+	ctx.Error(err)
+	resp.Fail(ctx).Code(types.ErrBadParams.Code).ErrorMsg("bad params").JSON()
 }

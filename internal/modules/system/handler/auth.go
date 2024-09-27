@@ -10,6 +10,7 @@ import (
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/repo"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/types"
 	"github.com/ginx-contribs/ginx-server/pkg/captcha"
+	"github.com/ginx-contribs/ginx-server/pkg/email"
 	"github.com/ginx-contribs/ginx-server/pkg/ts"
 	"github.com/ginx-contribs/ginx/pkg/resp/statuserr"
 	"github.com/ginx-contribs/jwtx"
@@ -18,6 +19,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
+	"github.com/wneessen/go-mail"
 	"golang.org/x/net/context"
 	"time"
 )
@@ -105,7 +107,7 @@ func (a AuthHandler) RegisterNewUser(ctx context.Context, option types.RegisterO
 }
 
 // ResetPassword resets specified user password and returns uid
-func (a AuthHandler) ResetPassword(ctx context.Context, option types.ResetPaswdOptions) error {
+func (a AuthHandler) ResetPassword(ctx context.Context, option types.ResetOptions) error {
 
 	// check verify code if is valid
 	err := a.CaptchaHandler.Check(ctx, option.Email, option.Code, types.UsageReset)
@@ -326,6 +328,8 @@ func (t TokenHandler) parse(token, secret string) (types.Token, error) {
 type CaptchaHandler struct {
 	CaptchaCache cache.CaptchaCache
 	EmailHandler EmailHandler
+
+	MetaInfo conf.MetaInfo
 }
 
 // SendCaptchaEmail send a verify code email to the specified address
@@ -355,17 +359,28 @@ func (v CaptchaHandler) SendCaptchaEmail(ctx context.Context, to string, usage t
 		}
 	}
 
-	pendingMail := TmplConfirmCode(usage.String(), to, code, ttl.Duration())
+	msg := email.Message{
+		ContentType: mail.TypeTextHTML,
+		To:          []string{to},
+		Subject:     fmt.Sprintf("you are applying for verification code tp %s.", usage.String()),
+		Message: map[string]any{
+			"to":       to,
+			"action":   usage.String(),
+			"duration": ttl.String(),
+			"code":     code,
+			"author":   v.MetaInfo.Author,
+		},
+		Template: email.TemplateCaptcha,
+	}
 
 	// send email
-	err := v.EmailHandler.PublishEmail(ctx, fmt.Sprintf("you are applying for verification code for %s.", usage.String()), []string{to}, pendingMail)
+	err := v.EmailHandler.Publish(ctx, msg)
 	if err != nil {
 		if err := v.CaptchaCache.Del(ctx, usage, code); err != nil {
 			return statuserr.InternalError(err)
 		}
 		return err
 	}
-
 	return nil
 }
 
@@ -380,6 +395,7 @@ func (v CaptchaHandler) Check(ctx context.Context, to, code string, usage types.
 	return nil
 }
 
+// Remove removes captcha from cache
 func (v CaptchaHandler) Remove(ctx context.Context, code string, usage types.Usage) error {
 	err := v.CaptchaCache.Del(ctx, usage, code)
 	if err != nil {

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+<div style="color: #74787E">
+    <p>Hi {{ .to }},<p>
+    <br/>
+    <p>Welcome! you are applying for verification code to {{ .action }}.<p>
+    <p>Please use your code as soon as quickly, it will be expired in {{ .duration }} later.<p>
+    <p>Your Code is <span style="color: #555;font-weight: bold;">{{ .code }}</span>.</p>
+    <p>If this is not your own operation, please ignore this email.</p>
+    <br/>
+    <p>Yours truly,</p>
+    <p> {{ .author }}</p>
+</div>
+</body>
+</html>

@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	AppName    = "ginx-server"
 	Author     = "ginx-contribs"
 	Version    = "unknown"
 	BuildTime  = "1970.01.01"
@@ -48,9 +49,12 @@ func NewServer(ctx context.Context, author, version, buildTime, configFile strin
 		return nil, err
 	}
 
-	appConf.Author = author
-	appConf.Version = version
-	appConf.BuildTime = buildTime
+	appConf.Meta = conf.MetaInfo{
+		AppName:   AppName,
+		Author:    author,
+		Version:   version,
+		BuildTime: buildTime,
+	}
 
 	// revise configuration
 	appConf, err = conf.Revise(appConf)

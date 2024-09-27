@@ -81,34 +81,48 @@ func (q *StreamQueue) consume(ctx context.Context, topic, group, consumer string
 			slog.Error("stream panic recovered", slog.Any("error", err))
 		}
 	}()
-	// create the consumer group
-	stream := q.redis.XGroupCreateMkStream(ctx, topic, group, "0")
-	if stream.Err() != nil && stream.Err().Error() != "BUSYGROUP Consumer Group name already exists" {
-		return stream.Err()
-	}
 
 	slog.Debug(fmt.Sprintf("consumer %q is running", consumer), slog.String("topic", topic), slog.String("group", group))
 
+	var consumeSteps steps
+	consumeSteps.Then(func() (error, bool) { // create the consumer group
+		stream := q.redis.XGroupCreateMkStream(ctx, topic, group, "0")
+		if stream.Err() != nil && stream.Err().Error() != "BUSYGROUP Consumer Group name already exists" {
+			return stream.Err(), true
+		}
+		return nil, false
+	}).Then(func() (error, bool) { // read the latest message
+		if id, err := q.readStream(ctx, topic, group, consumer, ">", batchSize, cb, 100*time.Millisecond); err != nil {
+			errorLog("stream read latest failed", err, id, topic, group, consumer)
+			return err, false
+		}
+		return nil, false
+	}).Then(func() (error, bool) { // read the messages that received but not ack
+		if id, err := q.readStream(ctx, topic, group, consumer, "1", batchSize, cb, 100*time.Millisecond); err != nil {
+			errorLog("stream read not-ack failed", err, id, topic, group, consumer)
+			return err, false
+		}
+		return nil, false
+	}).Then(func() (error, bool) {
+		if err := q.clearDead(ctx, topic, group, time.Minute*5, 10); err != nil {
+			slog.Error("stream clear dead failed", slog.Any("error", err))
+		}
+		return nil, false
+	})
+
 	// consume messages in a loop
 	for {
-		// quit if queue was closed
-		select {
-		case <-q.ctx.Done():
-			return nil
-		default:
-			// read the latest message
-			if id, err := q.readStream(ctx, topic, group, consumer, ">", batchSize, cb, 1000*time.Millisecond); err != nil {
-				errorLog("stream read latest failed", err, id, topic, group, consumer)
+		for _, step := range consumeSteps {
+			// quit is context done
+			if isDone(q.ctx) {
+				return nil
 			}
-			// read the messages that received but not ack
-			if id, err := q.readStream(ctx, topic, group, consumer, "1", batchSize, cb, 1000*time.Millisecond); err != nil {
-				errorLog("stream read not-ack failed", err, id, topic, group, consumer)
-			}
-			// clear dead messages in pending list
-			if err := q.clearDead(ctx, topic, group, time.Minute*5, 10); err != nil {
-				slog.Error("stream clear dead failed", slog.Any("error", err))
+			err, quit := step()
+			if err != nil && quit {
+				return err
 			}
 		}
+		time.Sleep(1)
 	}
 }
 
