@@ -76,8 +76,6 @@ github.com/ginx-contribs/ginx v1.4.1 h1:DnskRl//Aod7VtsxJAqq6Ei4V7tpJatTLfEhy38H
 github.com/ginx-contribs/ginx v1.4.1/go.mod h1:Lgff0kkwPhererRv9HYHLA7h0Sy5/C3UJKr7zihRO0I=
 github.com/ginx-contribs/jwtx v1.0.0 h1:P0WWfjLFluBboZraCy7te3RMMPt4cVF8A5cLVlBhiKc=
 github.com/ginx-contribs/jwtx v1.0.0/go.mod h1:bHo1bGMz7624rIS1s1V9edKUjhX1z/+4I9+brsW0RgA=
-github.com/ginx-contribs/logx v1.1.2 h1:Ege7yAl7OOF4DURvw0SDYzpAfzcjxnc/PxCAzFB8A7o=
-github.com/ginx-contribs/logx v1.1.2/go.mod h1:m9xdfPQPK9u3bEl8FcX47EszOGrdHtp1ofWUgJxC7gg=
 github.com/ginx-contribs/logx v1.2.0 h1:JWWS1iQocZQiK0hIHA8gBT+YuXn61AYMUdGSyn0engg=
 github.com/ginx-contribs/logx v1.2.0/go.mod h1:m9xdfPQPK9u3bEl8FcX47EszOGrdHtp1ofWUgJxC7gg=
 github.com/ginx-contribs/str2bytes v1.0.0 h1:FKnlejGoQIgSbePmgnBTAq0S1NNTXKwl1uUK6a5ercM=
