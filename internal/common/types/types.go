@@ -6,6 +6,7 @@ import (
 	"github.com/ginx-contribs/ginx-server/internal/conf"
 	"github.com/ginx-contribs/ginx-server/pkg/email"
 	"github.com/ginx-contribs/ginx-server/pkg/mq"
+	"github.com/ginx-contribs/ginx-server/pkg/token"
 	"github.com/google/wire"
 	"github.com/redis/go-redis/v9"
 )
@@ -15,6 +16,7 @@ var Provider = wire.NewSet(
 	wire.FieldsOf(new(Injector), "Router"),
 	wire.FieldsOf(new(Injector), "EntDB"),
 	wire.FieldsOf(new(Injector), "Redis"),
+	wire.FieldsOf(new(Injector), "Token"),
 	wire.FieldsOf(new(Injector), "Email"),
 	wire.FieldsOf(new(Injector), "MQ"),
 	// configuration
@@ -33,6 +35,8 @@ type Injector struct {
 	EntDB *ent.Client
 	// redis client
 	Redis *redis.Client
+	// token resolver
+	Token *token.Resolver
 	// email client
 	Email *email.Sender
 	// message queue

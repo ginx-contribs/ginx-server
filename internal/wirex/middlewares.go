@@ -3,7 +3,6 @@ package wirex
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ginx-contribs/ginx-server/internal/common/types"
-	authhandler "github.com/ginx-contribs/ginx-server/internal/modules/system/handler"
 	"github.com/ginx-contribs/ginx-server/pkg/mids"
 	"github.com/ginx-contribs/ginx/contribs/requestid"
 	"github.com/ginx-contribs/ginx/middleware"
@@ -44,6 +43,5 @@ func RequestCache(injector types.Injector) gin.HandlerFunc {
 
 // TokenVerify return jwt token authenticate middleware
 func TokenVerify(injector types.Injector) gin.HandlerFunc {
-	tokenHandler := authhandler.NewTokenHandler(injector.Config.Jwt, injector.Redis)
-	return mids.TokenAuthenticator(tokenHandler.VerifyAccess)
+	return mids.TokenAuthenticator(injector.Token.VerifyAccess)
 }

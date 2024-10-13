@@ -34,7 +34,12 @@ func NewHTTPServer(ctx context.Context, appConf *conf.App, logger *logx.Logger) 
 	}
 	// initialize email client
 	slog.Debug(fmt.Sprintf("establish email client(%s:%d)", appConf.Email.Host, appConf.Email.Port))
-	emailClient, err := wirex.NewEmail(ctx, appConf.Email)
+	emailClient, err := wirex.NewEmailSender(ctx, appConf.Email)
+	if err != nil {
+		return nil, err
+	}
+	// initialize token resolver
+	tokenResolver, err := wirex.NewTokenResolver(ctx, appConf.Jwt, redisClient)
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +50,7 @@ func NewHTTPServer(ctx context.Context, appConf *conf.App, logger *logx.Logger) 
 		Config: appConf,
 		EntDB:  db,
 		Redis:  redisClient,
+		Token:  tokenResolver,
 		Email:  emailClient,
 		MQ:     queue,
 	}
@@ -61,8 +67,8 @@ func NewHTTPServer(ctx context.Context, appConf *conf.App, logger *logx.Logger) 
 	if err != nil {
 		return nil, err
 	}
-	modManager := modules.NewModuleManager(&mods)
 	// initialize modules
+	modManager := modules.NewModuleManager(&mods)
 	err = modManager.Init(injector)
 	if err != nil {
 		return nil, err

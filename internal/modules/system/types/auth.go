@@ -1,12 +1,8 @@
 package types
 
 import (
-	"errors"
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/ginx-contribs/ginx/constant/status"
 	"github.com/ginx-contribs/ginx/pkg/resp/statuserr"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
@@ -70,26 +66,6 @@ type CaptchaOption struct {
 type TokenPayload struct {
 	Username string `json:"username"`
 	UserId   string `json:"userId"`
-	Remember bool   `json:"remember"`
-}
-
-// TokenClaims is payload info in jwt
-type TokenClaims struct {
-	TokenPayload
-	jwt.RegisteredClaims
-}
-
-// Token represents a jwt token
-type Token struct {
-	Token       *jwt.Token
-	Claims      TokenClaims
-	TokenString string
-}
-
-// TokenPair represents a jwt token pair composed of access token and refresh token
-type TokenPair struct {
-	AccessToken  Token
-	RefreshToken Token
 }
 
 type TokenResult struct {
@@ -132,36 +108,4 @@ func CheckValidUsage(u Usage) error {
 		return ErrVerifyCodeUsageUnsupported
 	}
 	return nil
-}
-
-const tokenKey = "auth.token.context.info.key"
-
-// SetTokenInfo stores token information into context
-func SetTokenInfo(ctx *gin.Context, token *Token) {
-	ctx.Set(tokenKey, token)
-}
-
-// GetTokenInfo returns token information from context
-func GetTokenInfo(ctx *gin.Context) (*Token, error) {
-	value, exists := ctx.Get(tokenKey)
-	if !exists {
-		return nil, errors.New("there is no token in context")
-	}
-
-	if token, ok := value.(*Token); !ok {
-		return nil, fmt.Errorf("expected %T, got %T", &Token{}, value)
-	} else if token == nil {
-		return nil, errors.New("nil token in context")
-	} else {
-		return token, nil
-	}
-}
-
-// MustGetTokenInfo returns token information from context, panic if err != nil
-func MustGetTokenInfo(ctx *gin.Context) *Token {
-	info, err := GetTokenInfo(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return info
 }

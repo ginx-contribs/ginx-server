@@ -12,7 +12,6 @@ var Provider = wire.NewSet(
 	// repo
 	wire.Struct(new(repo.UserRepo), "*"),
 	// handler
-	handler.NewTokenHandler,
 	handler.NewEmailHandler,
 	wire.Struct(new(handler.AuthHandler), "*"),
 	wire.Struct(new(handler.CaptchaHandler), "*"),
@@ -38,7 +37,6 @@ type Module struct {
 	AuthHandler   handler.AuthHandler
 	CodeHandler   handler.CaptchaHandler
 	EmailHandler  handler.EmailHandler
-	TokenHandler  handler.TokenHandler
 	UserHandler   handler.UserHandler
 	HealthHandler handler.HealthHandler
 

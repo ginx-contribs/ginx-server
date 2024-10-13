@@ -6,12 +6,13 @@ import (
 	"github.com/ginx-contribs/ginx"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/handler"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/types"
+	"github.com/ginx-contribs/ginx-server/pkg/token"
 	"github.com/ginx-contribs/ginx/pkg/resp"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthAPI struct {
-	TokenHandler   handler.TokenHandler
+	TokenResolver  *token.Resolver
 	AuthHandler    handler.AuthHandler
 	CaptchaHandler handler.CaptchaHandler
 }
@@ -39,8 +40,8 @@ func (a *AuthAPI) Login(ctx *gin.Context) {
 	}
 
 	resp.Ok(ctx).Msg("login ok").Data(types.TokenResult{
-		AccessToken:  tokenPair.AccessToken.TokenString,
-		RefreshToken: tokenPair.RefreshToken.TokenString,
+		AccessToken:  tokenPair.Access.Raw,
+		RefreshToken: tokenPair.Refresh.Raw,
 	}).JSON()
 }
 
@@ -105,7 +106,7 @@ func (a *AuthAPI) Refresh(ctx *gin.Context) {
 	}
 
 	// ask for refresh TokenHandler
-	tokenPair, err := a.TokenHandler.Refresh(ctx, refreshOpt.AccessToken, refreshOpt.RefreshToken)
+	tokenPair, err := a.TokenResolver.Refresh(ctx, refreshOpt.AccessToken, refreshOpt.RefreshToken)
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			resp.Fail(ctx).Error(types.ErrCredentialExpired).JSON()
@@ -116,8 +117,8 @@ func (a *AuthAPI) Refresh(ctx *gin.Context) {
 		return
 	}
 	resp.Ok(ctx).Msg("refresh ok").Data(types.TokenResult{
-		AccessToken:  tokenPair.AccessToken.TokenString,
-		RefreshToken: tokenPair.RefreshToken.TokenString,
+		AccessToken:  tokenPair.Access.Raw,
+		RefreshToken: tokenPair.Refresh.Raw,
 	}).JSON()
 }
 

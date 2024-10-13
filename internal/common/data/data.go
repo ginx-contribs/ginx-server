@@ -6,9 +6,6 @@ import (
 )
 
 var Provider = wire.NewSet(
-	// cache
-	cache.NewRedisTokenCache,
-	wire.Bind(new(cache.TokenCache), new(*cache.RedisTokenCache)),
 	cache.NewRedisCaptchaCache,
 	wire.Bind(new(cache.CaptchaCache), new(*cache.RedisCodeCache)),
 )

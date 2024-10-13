@@ -19,15 +19,14 @@ import (
 // Injectors from wire.go:
 
 func Inject(injector types.Injector) (modules.Modules, error) {
-	app := injector.Config
-	jwt := app.Jwt
-	client := injector.Redis
-	tokenHandler := handler.NewTokenHandler(jwt, client)
-	entClient := injector.EntDB
+	resolver := injector.Token
+	client := injector.EntDB
 	userRepo := repo.UserRepo{
-		DB: entClient,
+		DB: client,
 	}
-	redisCodeCache := cache.NewRedisCaptchaCache(client)
+	redisClient := injector.Redis
+	redisCodeCache := cache.NewRedisCaptchaCache(redisClient)
+	app := injector.Config
 	email := app.Email
 	sender := injector.Email
 	queue := injector.MQ
@@ -42,17 +41,17 @@ func Inject(injector types.Injector) (modules.Modules, error) {
 		MetaInfo:     metaInfo,
 	}
 	authHandler := handler.AuthHandler{
-		Token:          tokenHandler,
+		Token:          resolver,
 		UserRepo:       userRepo,
 		CaptchaHandler: captchaHandler,
 	}
 	authAPI := api.AuthAPI{
-		TokenHandler:   tokenHandler,
+		TokenResolver:  resolver,
 		AuthHandler:    authHandler,
 		CaptchaHandler: captchaHandler,
 	}
 	repoUserRepo := &repo.UserRepo{
-		DB: entClient,
+		DB: client,
 	}
 	userHandler := handler.UserHandler{
 		UserRepo: repoUserRepo,
@@ -71,7 +70,6 @@ func Inject(injector types.Injector) (modules.Modules, error) {
 		AuthHandler:   authHandler,
 		CodeHandler:   captchaHandler,
 		EmailHandler:  emailHandler,
-		TokenHandler:  tokenHandler,
 		UserHandler:   userHandler,
 		HealthHandler: healthHandler,
 		UserRepo:      userRepo,
