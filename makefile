@@ -92,7 +92,7 @@ ent_clean:
 	@rm -rf $(ent_generated)
 
 # go swagger
-api_path := ./server/api
+api_path := ./internal/doc
 
 .PHONY: swag
 swag_gen:
