@@ -5,8 +5,8 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
-	"github.com/ginx-contribs/ginx-server/pkg/idx"
-	"github.com/ginx-contribs/ginx-server/pkg/ts"
+	"github.com/ginx-contribs/ginx-server/pkg/utils/idx"
+	"github.com/ginx-contribs/ginx-server/pkg/utils/ts"
 )
 
 // User holds the schema definition for the User entity.
