@@ -47,6 +47,7 @@ var DefaultConfig = App{
 		IdleTimeout:  5 * duration.Minute,
 		MultipartMax: 50 << 20,
 		Pprof:        false,
+		Swagger:      true,
 	},
 	Log: Log{
 		Filename: "/etc/ginx-internal/internal.log",

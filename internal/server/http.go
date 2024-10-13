@@ -78,6 +78,9 @@ func NewHTTPServer(ctx context.Context, appConf *conf.App, logger *logx.Logger) 
 	onStart := func(ctx context.Context) error {
 		queue.Start(ctx)
 		slog.Info("message queue is listening")
+		if appConf.Server.Swagger {
+			slog.Info(fmt.Sprintf("view server http api doc at http://127.0.0.1:8080/swagger/index.html"))
+		}
 		return nil
 	}
 	server.BeforeStarting = append(server.BeforeStarting, onStart)

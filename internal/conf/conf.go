@@ -33,6 +33,7 @@ type Server struct {
 	IdleTimeout  duration.Duration `toml:"idleTimeout" comment:"the maximum amount of time to wait for the next request when keep-alives are enabled"`
 	MultipartMax int64             `toml:"multipartMax" comment:"value of 'maxMemory' param that is given to http.Request's ParseMultipartForm"`
 	Pprof        bool              `toml:"pprof" comment:"enabled pprof program profiling"`
+	Swagger      bool              `toml:"swagger" comment:"enable swagger documentation"`
 	TLS          TLS               `toml:"tls" comment:"tls certificate"`
 }
 

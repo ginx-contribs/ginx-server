@@ -7,12 +7,15 @@ import (
 	"github.com/ginx-contribs/ginx"
 	"github.com/ginx-contribs/ginx-server/internal/common/types"
 	"github.com/ginx-contribs/ginx-server/internal/conf"
+	_ "github.com/ginx-contribs/ginx-server/internal/doc"
 	"github.com/ginx-contribs/ginx/constant/methods"
 	"github.com/ginx-contribs/ginx/middleware"
 	"github.com/ginx-contribs/ginx/pkg/resp"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/pkg/errors"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log/slog"
 	"net/http/pprof"
 	"strings"
@@ -52,6 +55,11 @@ func NewHttpServer(ctx context.Context, appConf *conf.App, injector types.Inject
 		server.Engine().GET("/pprof/heap", gin.WrapH(pprof.Handler("heap")))
 		server.Engine().GET("/pprof/goroutine", gin.WrapH(pprof.Handler("goroutine")))
 		slog.Info("pprof profiling enabled")
+	}
+
+	// whether to enable swagger doc
+	if appConf.Server.Swagger {
+		server.Engine().GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	return server, nil
