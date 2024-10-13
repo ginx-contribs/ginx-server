@@ -25,7 +25,7 @@ func Inject(injector types.Injector) (modules.Modules, error) {
 		DB: client,
 	}
 	redisClient := injector.Redis
-	redisCodeCache := cache.NewRedisCaptchaCache(redisClient)
+	redisCaptchaCache := cache.NewRedisCaptchaCache(redisClient)
 	app := injector.Config
 	email := app.Email
 	sender := injector.Email
@@ -36,7 +36,7 @@ func Inject(injector types.Injector) (modules.Modules, error) {
 	}
 	metaInfo := app.Meta
 	captchaHandler := handler.CaptchaHandler{
-		CaptchaCache: redisCodeCache,
+		CaptchaCache: redisCaptchaCache,
 		EmailHandler: emailHandler,
 		MetaInfo:     metaInfo,
 	}

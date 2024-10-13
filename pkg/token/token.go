@@ -3,8 +3,8 @@ package token
 import (
 	"context"
 	"errors"
-	"github.com/ginx-contribs/ginx-server/pkg/utils/idx"
-	"github.com/ginx-contribs/ginx-server/pkg/utils/ts"
+	"github.com/ginx-contribs/ginx-server/pkg/toolset/idx"
+	"github.com/ginx-contribs/ginx-server/pkg/toolset/ts"
 	"github.com/ginx-contribs/ginx/pkg/resp/statuserr"
 	"github.com/ginx-contribs/jwtx"
 	"github.com/golang-jwt/jwt/v5"

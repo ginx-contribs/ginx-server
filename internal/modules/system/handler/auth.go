@@ -11,7 +11,7 @@ import (
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/types"
 	"github.com/ginx-contribs/ginx-server/pkg/email"
 	"github.com/ginx-contribs/ginx-server/pkg/token"
-	"github.com/ginx-contribs/ginx-server/pkg/utils/captcha"
+	"github.com/ginx-contribs/ginx-server/pkg/toolset/captcha"
 	"github.com/ginx-contribs/ginx/pkg/resp/statuserr"
 	"github.com/ginx-contribs/str2bytes"
 	"github.com/pkg/errors"
