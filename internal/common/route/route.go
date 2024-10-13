@@ -33,23 +33,26 @@ func SetTokenInfo(ctx *gin.Context, token *token.Token) {
 }
 
 // GetTokenInfo returns token information from context
-func GetTokenInfo(ctx *gin.Context) (*token.Token, error) {
+func GetTokenInfo(ctx *gin.Context) (*token.Token, bool, error) {
 	value, exists := ctx.Get(tokenKey)
 	if !exists {
-		return nil, errors.New("there is no token in context")
+		return nil, false, nil
 	}
 	if gotToken, ok := value.(*token.Token); !ok {
-		return nil, fmt.Errorf("expected %T, got %T", &token.Token{}, value)
+		return nil, false, fmt.Errorf("expected %T, got %T", &token.Token{}, value)
 	} else if gotToken == nil {
-		return nil, errors.New("nil token in context")
+		return nil, false, errors.New("nil token in context")
 	} else {
-		return gotToken, nil
+		return gotToken, true, nil
 	}
 }
 
 // MustGetTokenInfo returns token information from context, panic if err != nil
 func MustGetTokenInfo(ctx *gin.Context) *token.Token {
-	info, err := GetTokenInfo(ctx)
+	info, e, err := GetTokenInfo(ctx)
+	if !e {
+		panic(errors.New("token not exist in context"))
+	}
 	if err != nil {
 		panic(err)
 	}

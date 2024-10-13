@@ -3,9 +3,9 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/ginx-contribs/ginx"
-	"github.com/ginx-contribs/ginx-server/internal/common/route"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/handler"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/types"
+	"github.com/ginx-contribs/ginx-server/pkg/toolset/ginxutils"
 	"github.com/ginx-contribs/ginx/pkg/resp"
 )
 
@@ -13,17 +13,21 @@ type UserAPI struct {
 	UserHandler handler.UserHandler
 }
 
-// Me
-// @Summary      Me
+// Profile
+// @Summary      Profile
 // @Description  return user information for current user
 // @Tags         user
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  types.Response{data=types.UserInfo}
-// @Router       /user/me [GET]
-func (u UserAPI) Me(ctx *gin.Context) {
-	tokenInfo := route.MustGetTokenInfo(ctx)
-	userInfo, err := u.UserHandler.FindByUID(ctx, tokenInfo.Claims.Payload.(types.TokenPayload).UserId)
+// @Router       /user/profile [GET]
+func (u UserAPI) Profile(ctx *gin.Context) {
+	token, ok := ginxutils.GetLoginUserToken(ctx)
+	if !ok {
+		return
+	}
+	uid := token.Claims.Payload.(types.TokenPayload).UserId
+	userInfo, err := u.UserHandler.FindByUID(ctx, uid)
 	if err != nil {
 		resp.Fail(ctx).Error(err).JSON()
 	} else {
@@ -39,10 +43,10 @@ func (u UserAPI) Me(ctx *gin.Context) {
 // @Produce      json
 // @Param        uid  query  string  true "uid"
 // @Success      200  {object}  types.Response{data=types.UserInfo}
-// @Router       /user/info [GET]
+// @Router       /user/:uid [GET]
 func (u UserAPI) Info(ctx *gin.Context) {
 	var opt types.UidOptions
-	if err := ginx.ShouldValidateQuery(ctx, &opt); err != nil {
+	if err := ginx.ShouldValidateURI(ctx, &opt); err != nil {
 		return
 	}
 	userInfo, err := u.UserHandler.FindByUID(ctx, opt.Uid)
@@ -61,7 +65,7 @@ func (u UserAPI) Info(ctx *gin.Context) {
 // @Produce      json
 // @Param        SearchUserOptions   query   types.SearchUserOptions  true  "SearchUserOptions"
 // @Success      200  {object}  types.Response{data=types.UserSearchResult}
-// @Router       /user/list [GET]
+// @Router       /users [GET]
 func (u UserAPI) List(ctx *gin.Context) {
 	var page types.SearchUserOptions
 	if err := ginx.ShouldValidateQuery(ctx, &page); err != nil {

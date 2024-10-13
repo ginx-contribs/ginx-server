@@ -9,7 +9,7 @@ type SearchUserOptions struct {
 }
 
 type UidOptions struct {
-	Uid string `form:"uid" binding:"required"`
+	Uid string `form:"uid" uri:"uid" binding:"required"`
 }
 
 type UserInfo struct {

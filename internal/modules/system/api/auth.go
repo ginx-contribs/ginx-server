@@ -122,16 +122,16 @@ func (a *AuthAPI) Refresh(ctx *gin.Context) {
 	}).JSON()
 }
 
-// VerifyCode
-// @Summary      VerifyCode
-// @Description  send verification code mail to specified email address
+// Captcha
+// @Summary      Captcha
+// @Description  send captcha code mail to specified email address
 // @Tags         auth
 // @Accept       json
 // @Produce      json
 // @Param        CaptchaOption   body   types.CaptchaOption  true  "CaptchaOption"
 // @Success      200  {object}  types.Response
 // @Router       /auth/captcha [POST]
-func (a *AuthAPI) VerifyCode(ctx *gin.Context) {
+func (a *AuthAPI) Captcha(ctx *gin.Context) {
 	var verifyOpt types.CaptchaOption
 	if err := ginx.ShouldValidateJSON(ctx, &verifyOpt); err != nil {
 		return

@@ -70,16 +70,16 @@ func (m Module) RegisterRouter(injector types.Injector) {
 		authGroup.POST("/register", authAPI.Register)
 		authGroup.POST("/reset", authAPI.ResetPassword)
 		authGroup.POST("/refresh", authAPI.Refresh)
-		authGroup.POST("/captcha", authAPI.VerifyCode)
+		authGroup.POST("/captcha", authAPI.Captcha)
 	}
 
 	// user api
 	userAPI := m.UserAPI
-	userGroup := router.Group("/user")
+	userGroup := router.Group("")
 	{
-		userGroup.GET("/info", userAPI.Info)
-		userGroup.GET("/me", userAPI.Me)
-		userGroup.GET("/list", userAPI.List)
+		userGroup.GET("/user/:uid", userAPI.Info)
+		userGroup.GET("/user/profile", userAPI.Profile)
+		userGroup.GET("/users", userAPI.List)
 	}
 
 	// health api
