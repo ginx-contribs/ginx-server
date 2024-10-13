@@ -7,11 +7,11 @@
 package wirex
 
 import (
-	"github.com/ginx-contribs/ginx-server/internal/common/data/cache"
 	"github.com/ginx-contribs/ginx-server/internal/common/types"
 	"github.com/ginx-contribs/ginx-server/internal/modules"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/api"
+	"github.com/ginx-contribs/ginx-server/internal/modules/system/cache"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/handler"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/repo"
 )

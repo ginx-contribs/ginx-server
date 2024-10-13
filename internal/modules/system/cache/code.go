@@ -23,18 +23,18 @@ type CaptchaCache interface {
 	Del(ctx context.Context, usage types.Usage, code string) error
 }
 
-var _ CaptchaCache = (*RedisCodeCache)(nil)
+var _ CaptchaCache = (*RedisCaptchaCache)(nil)
 
-func NewRedisCaptchaCache(cache *redis.Client) *RedisCodeCache {
-	return &RedisCodeCache{cache: cache}
+func NewRedisCaptchaCache(cache *redis.Client) *RedisCaptchaCache {
+	return &RedisCaptchaCache{cache: cache}
 }
 
-// RedisCodeCache implements CaptchaCache with redis cache
-type RedisCodeCache struct {
+// RedisCaptchaCache implements CaptchaCache with redis cache
+type RedisCaptchaCache struct {
 	cache *redis.Client
 }
 
-func (r *RedisCodeCache) Set(ctx context.Context, usage types.Usage, code, to string, ttl, retry time.Duration) (bool, error) {
+func (r *RedisCaptchaCache) Set(ctx context.Context, usage types.Usage, code, to string, ttl, retry time.Duration) (bool, error) {
 
 	// check retry ttl
 	retryRes, err := r.cache.Get(ctx, to).Result()
@@ -67,12 +67,12 @@ func (r *RedisCodeCache) Set(ctx context.Context, usage types.Usage, code, to st
 	return true, nil
 }
 
-func (r *RedisCodeCache) Get(ctx context.Context, usage types.Usage, code string) (string, error) {
+func (r *RedisCaptchaCache) Get(ctx context.Context, usage types.Usage, code string) (string, error) {
 	codeKey := usage.Name() + ":" + code
 	return r.cache.Get(ctx, codeKey).Result()
 }
 
-func (r *RedisCodeCache) Del(ctx context.Context, usage types.Usage, code string) error {
+func (r *RedisCaptchaCache) Del(ctx context.Context, usage types.Usage, code string) error {
 	codeKey := usage.Name() + ":" + code
 	return r.cache.Del(ctx, codeKey).Err()
 }

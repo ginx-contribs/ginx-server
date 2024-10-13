@@ -3,12 +3,15 @@ package system
 import (
 	"github.com/ginx-contribs/ginx-server/internal/common/types"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/api"
+	"github.com/ginx-contribs/ginx-server/internal/modules/system/cache"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/handler"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/repo"
 	"github.com/google/wire"
 )
 
 var Provider = wire.NewSet(
+	cache.NewRedisCaptchaCache,
+	wire.Bind(new(cache.CaptchaCache), new(*cache.RedisCaptchaCache)),
 	// repo
 	wire.Struct(new(repo.UserRepo), "*"),
 	// handler
