@@ -280,7 +280,7 @@ paths:
       description: get user information by given uid
       parameters:
       - description: uid
-        in: query
+        in: path
         name: uid
         required: true
         type: string

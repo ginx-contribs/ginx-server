@@ -41,7 +41,7 @@ func (u UserAPI) Profile(ctx *gin.Context) {
 // @Tags         user
 // @Accept       json
 // @Produce      json
-// @Param        uid  query  string  true "uid"
+// @Param        uid  path  string  true "uid"
 // @Success      200  {object}  types.Response{data=types.UserInfo}
 // @Router       /user/:uid [GET]
 func (u UserAPI) Info(ctx *gin.Context) {

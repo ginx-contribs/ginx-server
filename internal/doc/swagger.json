@@ -262,7 +262,7 @@
                         "type": "string",
                         "description": "uid",
                         "name": "uid",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
