@@ -42,3 +42,11 @@ type Injector struct {
 	// message queue
 	MQ mq.Queue
 }
+
+// Response is a basic http json response, just for document.
+type Response struct {
+	Code  int    `json:"code"`
+	Msg   string `json:"msg"`
+	Data  any    `json:"data"`
+	Error string `json:"error"`
+}
