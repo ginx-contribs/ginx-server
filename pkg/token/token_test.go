@@ -23,7 +23,7 @@ func TestTokenIssue_Payload(t *testing.T) {
 	if !assert.NoError(t, err) {
 		return
 	}
-	m := pair.Access.Claims.Payload.(map[string]any)
+	m := pair.Access.Claims.Payload
 	if !assert.EqualValues(t, m["a"], "b") {
 		return
 	}

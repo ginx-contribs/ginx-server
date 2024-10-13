@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/ginx-contribs/ginx-server/ent"
 	"github.com/ginx-contribs/ginx-server/internal/conf"
 	"github.com/ginx-contribs/ginx-server/internal/modules/system/cache"
@@ -50,9 +51,9 @@ func (a AuthHandler) LoginWithPassword(ctx context.Context, option types.LoginOp
 	}
 
 	// issue token
-	tokenPair, err := a.Token.Issue(ctx, types.TokenPayload{
-		Username: queryUser.Username,
-		UserId:   queryUser.UID,
+	tokenPair, err := a.Token.Issue(ctx, gin.H{
+		"username": queryUser.Username,
+		"uid":      queryUser.UID,
 	}, option.Remember)
 
 	if err != nil {

@@ -50,7 +50,7 @@ type Options struct {
 // Claims consisted of jwt.RegisteredClaims and custom Payload.
 type Claims struct {
 	// payload information
-	Payload any
+	Payload map[string]any
 	// whether to need refresh
 	Remember bool
 	jwt.RegisteredClaims
@@ -118,7 +118,7 @@ type Resolver struct {
 }
 
 // Issue return a new issued token pair with given payload, it will return refresh token if refresh is true.
-func (r *Resolver) Issue(ctx context.Context, payload any, refresh bool) (Pair, error) {
+func (r *Resolver) Issue(ctx context.Context, payload map[string]any, refresh bool) (Pair, error) {
 	var (
 		tokenCache = r.opt.Cache
 		issuedAt   = ts.Now()
@@ -278,7 +278,7 @@ func (r *Resolver) VerifyRefresh(ctx context.Context, tokenString string) (Token
 }
 
 // issue a new token with given args
-func (r *Resolver) createToken(secret string, refresh bool, payload any, method jwt.SigningMethod, at time.Time, ttl time.Duration) (Token, error) {
+func (r *Resolver) createToken(secret string, refresh bool, payload map[string]any, method jwt.SigningMethod, at time.Time, ttl time.Duration) (Token, error) {
 	// generate unique id
 	id := r.opt.IdGen()
 	claims := Claims{

@@ -26,7 +26,7 @@ func (u UserAPI) Profile(ctx *gin.Context) {
 	if !ok {
 		return
 	}
-	uid := token.Claims.Payload.(types.TokenPayload).UserId
+	uid := token.Claims.Payload["uid"].(string)
 	userInfo, err := u.UserHandler.FindByUID(ctx, uid)
 	if err != nil {
 		resp.Fail(ctx).Error(err).JSON()
