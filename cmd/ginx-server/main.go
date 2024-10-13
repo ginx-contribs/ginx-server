@@ -6,7 +6,7 @@ import (
 	"github.com/ginx-contribs/ginx"
 	"github.com/ginx-contribs/ginx-server/internal/conf"
 	"github.com/ginx-contribs/ginx-server/internal/server"
-	"github.com/ginx-contribs/ginx-server/pkg/utils/logh"
+	"github.com/ginx-contribs/ginx-server/pkg/logh"
 	"github.com/spf13/cobra"
 	"log/slog"
 )
